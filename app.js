@@ -5,8 +5,8 @@
 // 1. Зарегистрируйся на https://openweathermap.org/api
 // 2. Получи бесплатный API ключ
 // 3. Вставь его сюда:
-const API_KEY = "7e0efcff0081df043c9009e6364c4a0e";
-const API_URL = "https://api.openweathermap.org/data/2.5";
+const API_KEY = '7e0efcff0081df043c9009e6364c4a0e';
+const API_URL = 'https://api.openweathermap.org/data/2.5';
 
 // ===================================
 // ПОЛУЧЕНИЕ ЭЛЕМЕНТОВ DOM
@@ -15,32 +15,32 @@ const API_URL = "https://api.openweathermap.org/data/2.5";
 // TODO: Получи все нужные элементы из HTML
 // Подсказка: используй querySelector/getElementById
 // Нужны: инпут, кнопки, блоки для отображения данных, сообщения об ошибке
-const cityInput = document.querySelector("#cityInput");
-const searchBtn = document.querySelector("#searchBtn");
-const locationBtn = document.querySelector("#locationBtn");
+const cityInput = document.querySelector('#cityInput');
+const searchBtn = document.querySelector('#searchBtn');
+const locationBtn = document.querySelector('#locationBtn');
 
-const errorMsg = document.querySelector("#errorMessage");
-const loading = document.querySelector("#loading");
+const errorMsg = document.querySelector('#errorMessage');
+const loading = document.querySelector('#loading');
 
-const cityName = document.querySelector("#cityName");
-const country = document.querySelector("#country");
+const cityName = document.querySelector('#cityName');
+const country = document.querySelector('#country');
 
-const weatherInfo = document.querySelector("#weatherInfo");
-const weatherIcon = document.querySelector("#weatherIcon");
+const weatherInfo = document.querySelector('#weatherInfo');
+const weatherIcon = document.querySelector('#weatherIcon');
 
-const temp = document.querySelector("#temp");
-const tempToggle = document.querySelector(".temp-toggle");
-const desc = document.querySelector("#description");
-const humidity = document.querySelector("#humidity");
-const windSpeed = document.querySelector("#windSpeed");
-const feelsLike = document.querySelector("#feelsLike");
-const visibility = document.querySelector("#visibility");
+const temp = document.querySelector('#temp');
+const tempToggle = document.querySelector('.temp-toggle');
+const desc = document.querySelector('#description');
+const humidity = document.querySelector('#humidity');
+const windSpeed = document.querySelector('#windSpeed');
+const feelsLike = document.querySelector('#feelsLike');
+const visibility = document.querySelector('#visibility');
 
-const fahrenheitBtn = document.querySelector("#fahrenheitBtn");
-const celsiusBtn = document.querySelector("#celsiusBtn");
+const fahrenheitBtn = document.querySelector('#fahrenheitBtn');
+const celsiusBtn = document.querySelector('#celsiusBtn');
 
-const forecast = document.querySelector("#forecast");
-let forecastCards = document.querySelector("#forecastCards");
+const forecast = document.querySelector('#forecast');
+let forecastCards = document.querySelector('#forecastCards');
 
 // ===================================
 // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
@@ -48,7 +48,7 @@ let forecastCards = document.querySelector("#forecastCards");
 
 // TODO: Переменная для хранения единиц измерения (celsius/fahrenheit)
 // TODO: Переменная для хранения текущих данных о погоде
-let currentUnit = "celsius";
+let currentUnit = 'celsius';
 
 let weatherData = null;
 // ===================================
@@ -68,16 +68,16 @@ let weatherData = null;
 async function getWeatherByCity(city) {
   // TODO: Реализуй функцию
   // 1. Показать индикатор загрузки
-  loading.classList.remove("hidden");
+  loading.classList.remove('hidden');
   // 2. Скрыть предыдущие данные и ошибки
-  weatherInfo.classList.add("hidden");
-  errorMsg.classList.add("hidden");
+  weatherInfo.classList.add('hidden');
+  errorMsg.classList.add('hidden');
   // 3. Сделать запрос к API
   // 4. Если успешно - отобразить данные
   // 5. Если ошибка - показать сообщение об ошибке
   try {
     const getCityByName = await fetch(
-      `${API_URL}/weather?q=${city}&appid=${API_KEY}&units=metric&lang=ru`,
+      `${API_URL}/weather?q=${city}&appid=${API_KEY}&units=metric&lang=ru`
     );
     if (!getCityByName.ok) {
       throw new Error(`City_not_found status: ${getCityByName.status}`);
@@ -85,10 +85,10 @@ async function getWeatherByCity(city) {
     const data = await getCityByName.json();
     return data;
   } catch (err) {
-    console.log("Ошибка:", err);
-    showError("Город не найден");
+    console.log('Ошибка:', err);
+    showError('Город не найден');
   } finally {
-    loading.classList.add("hidden");
+    loading.classList.add('hidden');
   }
   // 6. Скрыть индикатор загрузки
 }
@@ -103,14 +103,14 @@ async function getWeatherByCity(city) {
 async function getWeatherByCoords(lat, lon) {
   // TODO: Реализуй функцию
 
-  loading.classList.remove("hidden");
+  loading.classList.remove('hidden');
 
-  weatherInfo.classList.add("hidden");
-  errorMsg.classList.add("hidden");
+  weatherInfo.classList.add('hidden');
+  errorMsg.classList.add('hidden');
 
   try {
     const getCityByCoords = await fetch(
-      `${API_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=ru`,
+      `${API_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=ru`
     );
     if (!getCityByCoords.ok) {
       throw new Error(`City_not_found status: ${getCityByCoords.status}`);
@@ -118,10 +118,10 @@ async function getWeatherByCoords(lat, lon) {
     const data = await getCityByCoords.json();
     return data;
   } catch (err) {
-    console.log("Ошибка:", err);
-    showError("Город не найден");
+    console.log('Ошибка:', err);
+    showError('Город не найден');
   } finally {
-    loading.classList.add("hidden");
+    loading.classList.add('hidden');
   }
 }
 
@@ -149,21 +149,20 @@ function displayWeather(data) {
   cityName.textContent = data.name;
   country.textContent = data.sys.country;
   temp.textContent = Math.round(data.main.temp);
-  celsius = temp.textContent;
   desc.textContent = data.weather[0].description;
   humidity.textContent = data.main.humidity;
   windSpeed.textContent = Math.round(data.wind.speed);
   feelsLike.textContent = Math.round(data.main.feels_like);
   visibility.textContent = data.visibility;
 
-  celsiusBtn.classList.add("active");
-  fahrenheitBtn.classList.remove("active");
+  celsiusBtn.classList.add('active');
+  fahrenheitBtn.classList.remove('active');
   // 2. Установи иконку погоды
   weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
   // 3. Покажи блок с информацией о погоде
-  weatherInfo.classList.remove("hidden");
+  weatherInfo.classList.remove('hidden');
   // 4. Скрой сообщение об ошибке
-  errorMsg.classList.add("hidden");
+  errorMsg.classList.add('hidden');
 }
 
 /**
@@ -174,10 +173,10 @@ function showError(message) {
   // 1. Установи текст ошибки
   errorMsg.textContent = message;
   // 2. Покажи блок с ошибкой
-  errorMsg.classList.remove("hidden");
+  errorMsg.classList.remove('hidden');
   // 3. Скрой блок с погодой
-  loading.classList.add("hidden");
-  weatherInfo.classList.add("hidden");
+  loading.classList.add('hidden');
+  weatherInfo.classList.add('hidden');
 }
 
 /**
@@ -218,16 +217,16 @@ function fahrenheitToCelsius() {
  */
 function toggleTemperatureUnit() {
   // TODO: Реализуй функцию
-  if (currentUnit === "celsius") {
+  if (currentUnit === 'celsius') {
     celsiusToFahrenheit();
-    currentUnit = "fahrenheit";
+    currentUnit = 'fahrenheit';
   } else {
     fahrenheitToCelsius();
-    currentUnit = "celsius";
+    currentUnit = 'celsius';
   }
 
-  celsiusBtn.classList.toggle("active");
-  fahrenheitBtn.classList.toggle("active");
+  celsiusBtn.classList.toggle('active');
+  fahrenheitBtn.classList.toggle('active');
 }
 
 /**
@@ -252,7 +251,7 @@ function getCurrentLocation() {
   };
   const errorFunc = (error) => showError(error.message);
 
-  if ("geolocation" in navigator) {
+  if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(successFunc, errorFunc);
   }
   // 2. Запроси текущую позицию
@@ -278,22 +277,22 @@ async function getForecast(city) {
   // TODO: Реализуй функцию (бонус)
   try {
     const getCityForecast = await fetch(
-      `${API_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=ru`,
+      `${API_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=ru`
     );
     if (!getCityForecast.ok) {
       throw new Error(
-        `City_forecast_not_found status: ${getCityForecast.status}`,
+        `City_forecast_not_found status: ${getCityForecast.status}`
       );
     }
 
     const data = await getCityForecast.json();
     const twelvePM = data.list.filter(
-      (element) => element?.dt_txt?.split(" ")[1] === "12:00:00",
+      (element) => element?.dt_txt?.split(' ')[1] === '12:00:00'
     );
     return twelvePM;
   } catch (err) {
-    console.log("Ошибка:", err);
-    showError("Прогноз города не найден");
+    console.log('Ошибка:', err);
+    showError('Прогноз города не найден');
   }
 }
 
@@ -303,26 +302,26 @@ async function getForecast(city) {
 async function displayForecast(forecastData) {
   // TODO: Реализуй функцию (бонус)
   // 1. Очисти контейнер для карточек
-  forecast.classList.add("hidden");
-  forecastCards.textContent = "";
+  forecast.classList.add('hidden');
+  forecastCards.textContent = '';
 
   // 2. Для каждого дня создай карточку
   forecastData.forEach((element) => {
-    const forecastCard = document.createElement("div");
-    const forecastDay = document.createElement("h1");
-    const forecastIcon = document.createElement("img");
-    const forecastTemp = document.createElement("p");
+    const forecastCard = document.createElement('div');
+    const forecastDay = document.createElement('h1');
+    const forecastIcon = document.createElement('img');
+    const forecastTemp = document.createElement('p');
 
-    forecastCard.classList.add("forecast-card");
-    forecastDay.classList.add("forecast-day");
-    forecastIcon.classList.add("forecast-icon");
-    forecastTemp.classList.add("forecast-temp");
+    forecastCard.classList.add('forecast-card');
+    forecastDay.classList.add('forecast-day');
+    forecastIcon.classList.add('forecast-icon');
+    forecastTemp.classList.add('forecast-temp');
 
     const date = new Date(element.dt_txt);
-    const options = { weekday: "short", day: "numeric", month: "short" };
-    forecastDay.textContent = date.toLocaleDateString("ru-RU", options);
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    forecastDay.textContent = date.toLocaleDateString('ru-RU', options);
     forecastIcon.src = `https://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png`;
-    forecastTemp.textContent = Math.round(element.main.temp) + "°C";
+    forecastTemp.textContent = Math.round(element.main.temp) + '°C';
 
     forecastCard.append(forecastDay, forecastIcon, forecastTemp);
 
@@ -330,7 +329,7 @@ async function displayForecast(forecastData) {
   });
   // 3. Добавь день недели, иконку, температуру
   // 4. Покажи блок с прогнозом
-  forecast.classList.remove("hidden");
+  forecast.classList.remove('hidden');
 }
 
 // ===================================
@@ -343,17 +342,17 @@ const coordsRegex = /^-?\d+\.?\d*,\s?-?\d+\.?\d*$/;
 
 const GetAndPutWeather = async () => {
   let value = cityInput.value.trim();
-  if (value === "") {
-    showError("Введите название города");
+  if (value === '') {
+    showError('Введите название города');
     return;
   }
   let data;
 
   if (coordsRegex.test(value)) {
     // Если введено что-то вроде "55.75, 37.61"
-    const [lat, lon] = value.split(",").map(Number);
+    const [lat, lon] = value.split(',').map(Number);
     data = await getWeatherByCoords(lat, lon);
-  } else if (value !== "") {
+  } else if (value !== '') {
     // В остальном считаем, что это название города
     data = await getWeatherByCity(value.toLowerCase());
   }
@@ -363,22 +362,22 @@ const GetAndPutWeather = async () => {
   const forecastData = await getForecast(value.toLowerCase());
   if (!forecastData) return;
   displayForecast(forecastData);
-  cityInput.value = "";
+  cityInput.value = '';
 };
 
-searchBtn.addEventListener("click", GetAndPutWeather);
+searchBtn.addEventListener('click', GetAndPutWeather);
 // 2. Enter в поле ввода
-cityInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
+cityInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
     e.preventDefault();
     GetAndPutWeather();
     cityInput.blur();
   }
 });
 // 3. Клик по кнопке геолокации
-locationBtn.addEventListener("click", getCurrentLocation);
+locationBtn.addEventListener('click', getCurrentLocation);
 // 4. Клик по кнопкам переключения °C/°F
-tempToggle.addEventListener("click", toggleTemperatureUnit);
+tempToggle.addEventListener('click', toggleTemperatureUnit);
 
 // ===================================
 // ИНИЦИАЛИЗАЦИЯ

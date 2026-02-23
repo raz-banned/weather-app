@@ -16,8 +16,8 @@ A simple weather app to check current conditions and forecast.
 
 ## Screenshots
 
-![Main screen](assets/screenshot1.png)
-![Forecast](assets/screenshot2.png)
+<img src="assets/screenshot1.png" alt="Weather App Screenshot" width="800px">
+<img src="assets/screenshot2.png" alt="Weather App Screenshot" width="800px">
 
 ## Tech Stack
 
