@@ -1,39 +1,67 @@
 const API_KEY = '7e0efcff0081df043c9009e6364c4a0e';
 const API_URL = 'https://api.openweathermap.org/data/2.5';
 
-const cityInput = document.querySelector<HTMLInputElement>('#cityInput');
-const searchBtn = document.querySelector<HTMLButtonElement>('#searchBtn');
-const locationBtn = document.querySelector<HTMLButtonElement>('#locationBtn');
+const cityInput = document.querySelector<HTMLInputElement>('#cityInput')!;
+const searchBtn = document.querySelector<HTMLButtonElement>('#searchBtn')!;
+const locationBtn = document.querySelector<HTMLButtonElement>('#locationBtn')!;
 
-const errorMsg = document.querySelector<HTMLDivElement>('#errorMessage');
-const loading = document.querySelector<HTMLDivElement>('#loading');
+const errorMsg = document.querySelector<HTMLDivElement>('#errorMessage')!;
+const loading = document.querySelector<HTMLDivElement>('#loading')!;
 
-const cityName = document.querySelector<HTMLHeadingElement>('#cityName');
-const country = document.querySelector<HTMLParagraphElement>('#country');
+const cityName = document.querySelector<HTMLHeadingElement>('#cityName')!;
+const country = document.querySelector<HTMLParagraphElement>('#country')!;
 
-const weatherInfo = document.querySelector<HTMLDivElement>('#weatherInfo');
-const weatherIcon = document.querySelector<HTMLImageElement>('#weatherIcon');
+const weatherInfo = document.querySelector<HTMLDivElement>('#weatherInfo')!;
+const weatherIcon = document.querySelector<HTMLImageElement>('#weatherIcon')!;
 
-const temp = document.querySelector<HTMLHeadingElement>('#temp');
-const tempToggle = document.querySelector<HTMLDivElement>('.temp-toggle');
-const desc = document.querySelector<HTMLParagraphElement>('#description');
-const humidity = document.querySelector<HTMLParagraphElement>('#humidity');
-const windSpeed = document.querySelector<HTMLParagraphElement>('#windSpeed');
-const feelsLike = document.querySelector<HTMLParagraphElement>('#feelsLike');
-const visibility = document.querySelector<HTMLParagraphElement>('#visibility');
+const temp = document.querySelector<HTMLHeadingElement>('#temp')!;
+const tempToggle = document.querySelector<HTMLDivElement>('.temp-toggle')!;
+const desc = document.querySelector<HTMLParagraphElement>('#description')!;
+const humidity = document.querySelector<HTMLParagraphElement>('#humidity')!;
+const windSpeed = document.querySelector<HTMLParagraphElement>('#windSpeed')!;
+const feelsLike = document.querySelector<HTMLParagraphElement>('#feelsLike')!;
+const visibility = document.querySelector<HTMLParagraphElement>('#visibility')!;
 
 const fahrenheitBtn =
-  document.querySelector<HTMLButtonElement>('#fahrenheitBtn');
-const celsiusBtn = document.querySelector<HTMLButtonElement>('#celsiusBtn');
+  document.querySelector<HTMLButtonElement>('#fahrenheitBtn')!;
+const celsiusBtn = document.querySelector<HTMLButtonElement>('#celsiusBtn')!;
 
-const forecast = document.querySelector<HTMLDivElement>('#forecast');
-let forecastCards = document.querySelector<HTMLDivElement>('#forecastCards');
+const forecast = document.querySelector<HTMLDivElement>('#forecast')!;
+let forecastCards = document.querySelector<HTMLDivElement>('#forecastCards')!;
+
+window.addEventListener('error', (e) => {
+  console.log('Неожиданная ошибка: ', e.message);
+});
 
 let currentUnit = 'celsius';
 
-let weatherData = null;
+interface ApiData {
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+  main: {
+    temp: number;
+    feels_like: number;
+    humidity: number;
+  };
+  visibility: number;
+  wind: {
+    speed: number;
+    deg: number;
+  };
+  sys: {
+    country: string;
+  };
+}
 
-async function getWeatherByCity(city) {
+interface WeatherData extends ApiData {
+  name: string;
+}
+
+let weatherData: WeatherData | undefined;
+
+async function getWeatherByCity(city: string) {
   loading.classList.remove('hidden');
 
   weatherInfo.classList.add('hidden');
@@ -46,7 +74,8 @@ async function getWeatherByCity(city) {
     if (!getCityByName.ok) {
       throw new Error(`City_not_found status: ${getCityByName.status}`);
     }
-    const data = await getCityByName.json();
+    const data = (await getCityByName.json()) as WeatherData;
+
     return data;
   } catch (err) {
     console.log('Ошибка:', err);
@@ -56,7 +85,7 @@ async function getWeatherByCity(city) {
   }
 }
 
-async function getWeatherByCoords(lat, lon) {
+async function getWeatherByCoords(lat: number, lon: number) {
   loading.classList.remove('hidden');
 
   weatherInfo.classList.add('hidden');
@@ -69,7 +98,7 @@ async function getWeatherByCoords(lat, lon) {
     if (!getCityByCoords.ok) {
       throw new Error(`City_not_found status: ${getCityByCoords.status}`);
     }
-    const data = await getCityByCoords.json();
+    const data = (await getCityByCoords.json()) as WeatherData;
     return data;
   } catch (err) {
     console.log('Ошибка:', err);
@@ -79,17 +108,19 @@ async function getWeatherByCoords(lat, lon) {
   }
 }
 
-function displayWeather(data) {
+function displayWeather(data: WeatherData) {
   weatherData = data;
+
+  const convertToStr = (value: number | boolean) => String(value);
 
   cityName.textContent = data.name;
   country.textContent = data.sys.country;
-  temp.textContent = Math.round(data.main.temp);
+  temp.textContent = convertToStr(Math.round(data.main.temp));
   desc.textContent = data.weather[0].description;
-  humidity.textContent = data.main.humidity;
-  windSpeed.textContent = Math.round(data.wind.speed);
-  feelsLike.textContent = Math.round(data.main.feels_like);
-  visibility.textContent = data.visibility;
+  humidity.textContent = convertToStr(data.main.humidity);
+  windSpeed.textContent = convertToStr(Math.round(data.wind.speed));
+  feelsLike.textContent = convertToStr(Math.round(data.main.feels_like));
+  visibility.textContent = convertToStr(data.visibility);
 
   celsiusBtn.classList.add('active');
   fahrenheitBtn.classList.remove('active');
@@ -101,7 +132,7 @@ function displayWeather(data) {
   errorMsg.classList.add('hidden');
 }
 
-function showError(message) {
+function showError(message: string) {
   errorMsg.textContent = message;
 
   errorMsg.classList.remove('hidden');
@@ -116,15 +147,15 @@ function celsiusToFahrenheit() {
   const tempF = Math.round((weatherData.main.temp * 9) / 5 + 32);
   const feelsF = Math.round((weatherData.main.feels_like * 9) / 5 + 32);
 
-  temp.textContent = tempF;
-  feelsLike.textContent = feelsF;
+  temp.textContent = String(tempF);
+  feelsLike.textContent = String(feelsF);
 }
 
 function fahrenheitToCelsius() {
   if (!weatherData) return;
 
-  temp.textContent = Math.round(weatherData.main.temp);
-  feelsLike.textContent = Math.round(weatherData.main.feels_like);
+  temp.textContent = String(Math.round(weatherData.main.temp));
+  feelsLike.textContent = String(Math.round(weatherData.main.feels_like));
 }
 
 function toggleTemperatureUnit() {
@@ -141,24 +172,33 @@ function toggleTemperatureUnit() {
 }
 
 function getCurrentLocation() {
-  const successFunc = async (position) => {
+  const successFunc = async (position: GeolocationPosition) => {
     const coords = position.coords;
     const latitude = coords.latitude;
     const longitude = coords.longitude;
     const info = await getWeatherByCoords(latitude, longitude);
+    if (!info) {
+      console.log('Не была получена погода по координатам');
+      return;
+    }
     displayWeather(info);
 
     const forecastData = await getForecast(info.name);
     if (forecastData) displayForecast(forecastData);
   };
-  const errorFunc = (error) => showError(error.message);
+  const errorFunc = (error: GeolocationPositionError) =>
+    showError(error.message);
 
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(successFunc, errorFunc);
   }
 }
 
-async function getForecast(city) {
+interface ForecastData extends ApiData {
+  dt_txt: string;
+}
+
+async function getForecast(city: string) {
   try {
     const getCityForecast = await fetch(
       `${API_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=ru`
@@ -170,8 +210,9 @@ async function getForecast(city) {
     }
 
     const data = await getCityForecast.json();
+
     const twelvePM = data.list.filter(
-      (element) => element?.dt_txt?.split(' ')[1] === '12:00:00'
+      (element: ForecastData) => element?.dt_txt?.split(' ')[1] === '12:00:00'
     );
     return twelvePM;
   } catch (err) {
@@ -180,7 +221,7 @@ async function getForecast(city) {
   }
 }
 
-async function displayForecast(forecastData) {
+async function displayForecast(forecastData: ForecastData[]) {
   forecast.classList.add('hidden');
   forecastCards.textContent = '';
 
@@ -196,8 +237,11 @@ async function displayForecast(forecastData) {
     forecastTemp.classList.add('forecast-temp');
 
     const date = new Date(element.dt_txt);
-    const options = { weekday: 'short', day: 'numeric', month: 'short' };
-    forecastDay.textContent = date.toLocaleDateString('ru-RU', options);
+    forecastDay.textContent = date.toLocaleDateString('ru-RU', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    });
     forecastIcon.src = `https://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png`;
     forecastTemp.textContent = Math.round(element.main.temp) + '°C';
 
